@@ -39,6 +39,7 @@
 <script setup lang="ts">
 import axios from "axios";
 import { ref } from "vue";
+import apiClient from "../services/apiClient";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -50,27 +51,19 @@ defineOptions({
     name: "Register",
 });
 
-// Our Data to be Used as v-models
+// The Data to be Used as v-models
 const username = ref('');
 const email = ref('');
 const password = ref('');
 
 async function registerUser() {
     try {
-        const csrfToken = await axios.get("/sanctum/csrf-cookie");
-        console.log(csrfToken)
-
-        // Step 2: Make the registration request
-        const registerResponse = await axios.post("/api/register", {
+        // Registration request
+        const registerResponse = await apiClient.post("/api/register", {
                 name: username.value,
                 email: email.value,
                 password: password.value,
             },
-            // {
-            //     headers: {
-            //         'XSRF-TOKEN': csrfToken.data.v,
-            //     }
-            // }
         );
 
         if (registerResponse.status === 201) {
